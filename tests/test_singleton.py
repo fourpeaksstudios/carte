@@ -6,6 +6,12 @@ def locate():
 
 
 def test_answer():
-    assert locate() == [{'country_code': 'AU', 'city': 'Melbourne',
-                         'admin1': 'Victoria', 'admin2': 'Melbourne',
-                         'country': 'Australia'}]
+    assert locate() == [
+        {
+            "country_code": "AU",
+            "city": "Melbourne",
+            "admin1": "Victoria",
+            "admin2": "Melbourne",
+            "country": "Australia",
+        }
+    ]

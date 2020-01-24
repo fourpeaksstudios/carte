@@ -16,4 +16,9 @@ def test_answer():
         },
         {
             "country_code": "IL",
+            "city": "Jerusalem",
+            "admin1": "Jerusalem",
+            "admin2": "",
+            "country": "Israel",
+        },
     ]
