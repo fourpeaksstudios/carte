@@ -15,7 +15,15 @@
 
 ## Installation
 
-### From source using [Poetry](https://github.com/sdispater/poetry)
+### From [PyPI](https://pypi.org/) via `pip`
+
+[Carte](https://github.com/fourpeaksstudios/carte) is available from PyPI via [pip](https://pypi.org/project/carte/).
+
+```sh
+pip install carte
+```
+
+### From source using [`poetry`](https://github.com/sdispater/poetry)
 
 __Note:__ It is recommended to build `carte` in a virtual environment due to dependency version requirements.
 
