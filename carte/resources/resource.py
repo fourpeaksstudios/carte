@@ -4,23 +4,20 @@ import os
 
 import appdirs
 
-import reverse_geocode.config
-import reverse_geocode.utils
+import carte.config
+import carte.utils
 
 
 @dataclasses.dataclass
 class Resource(object):
-    def __init__(self, resource_filename, url):
-        self.resource_filename = resource_filename
-        self.url = url
+    def __init__(self):
         self.logs = logging.getLogger(__name__)
 
     def __hash__(self):
         return hash(repr(self))
 
     def fetch_resource_data(self) -> str:
-        data_dir_path = appdirs.user_data_dir(
-            reverse_geocode.config.APP_NAME)
+        data_dir_path = appdirs.user_data_dir(carte.config.APP_ID)
 
         if not os.path.exists(data_dir_path):
             os.makedirs(data_dir_path)
@@ -28,8 +25,7 @@ class Resource(object):
         resource_path = os.path.join(data_dir_path, self.resource_filename)
 
         if not os.path.exists(resource_path):
-            raw_resource_data = reverse_geocode.utils.download_resource(
-                self.url)
+            raw_resource_data = carte.utils.download_resource(self.url)
 
             self.save_resource_data(raw_resource_data, resource_path)
 

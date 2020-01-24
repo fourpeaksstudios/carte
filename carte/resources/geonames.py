@@ -3,14 +3,19 @@ import dataclasses
 import io
 import zipfile
 
+import initable
 import scipy.spatial
 
-from . import resource
+from carte.resources import resource
 
 
 @dataclasses.dataclass
 class Geonames(resource.Resource):
-    resource_filename = "cities-1000.csv"
+    resource_filename = "geonames.csv"
+    url = "http://download.geonames.org/export/dump/cities1000.zip"
+
+    def __init__(self):
+        super().__init__()
 
     def __hash__(self):
         return super().__hash__()
@@ -18,7 +23,8 @@ class Geonames(resource.Resource):
     def save_resource_data(self, resource_data, resource_data_path):
         zipped_resource_data = zipfile.ZipFile(io.BytesIO(resource_data))
         extracted_resource_data = zipped_resource_data.open(
-            zipped_resource_data.namelist()[0])
+            zipped_resource_data.namelist()[0]
+        )
 
         with open(resource_data_path, "w") as f:
             for line in extracted_resource_data.readlines():
@@ -29,29 +35,53 @@ class Geonames(resource.Resource):
                 admin2 = row[11]
                 country_code = row[8]
                 f.write(
-                    ','.join([latitude, longitude, city, admin1, admin2, country_code]))
+                    ",".join(
+                        [
+                            latitude,
+                            longitude,
+                            city,
+                            admin1,
+                            admin2,
+                            country_code,
+                        ]
+                    )
+                )
 
+    @initable.initializable
     def load(self):
         coordinates, self.locations = [], []
         resource_data_path = self.fetch_resource_data()
-        for latitude, longitude, city, admin1, admin2, country_code \
-                in csv.reader(open(resource_data_path), delimiter=','):
+        for (
+            latitude,
+            longitude,
+            city,
+            admin1,
+            admin2,
+            country_code,
+        ) in csv.reader(open(resource_data_path), delimiter=","):
             coordinates.append((float(latitude), float(longitude)))
             self.locations.append(
-                dict(country_code=country_code, city=city, admin1=admin1,
-                     admin2=admin2))
+                dict(
+                    country_code=country_code,
+                    city=city,
+                    admin1=admin1,
+                    admin2=admin2,
+                )
+            )
 
-        self.tree = scipy.spatial.KDTree(coordinates)
+        self.tree = scipy.spatial.cKDTree(coordinates)
 
     def query(self, coordinates, result) -> dict:
         try:
             _, indices = self.tree.query(coordinates, k=1)
             # normalize results from query()
-            indices = [indices] if not hasattr(
-                indices, "__iter__") else indices
+            indices = (
+                [indices] if not hasattr(indices, "__iter__") else indices
+            )
         except ValueError as error:
             self.logs.error(
-                "Unable to parse coordinates: {0}".format(coordinates))
+                "Unable to parse coordinates: {0}".format(coordinates)
+            )
 
             raise error
         else:

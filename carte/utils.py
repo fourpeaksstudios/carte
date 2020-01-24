@@ -1,7 +1,7 @@
 import urllib.request
 import urllib.error
 
-from . import exceptions
+from carte import exceptions
 
 
 def download_resource(url: str) -> str:
@@ -10,8 +10,7 @@ def download_resource(url: str) -> str:
     try:
         response = urllib.request.urlopen(url)
     except urllib.error.HTTPError as error:
-        raise exceptions.GeocodeException(
-            "%s: %s", error.code, error.reason)
+        raise exceptions.GeocodeException("%s: %s", error.code, error.reason)
     except urllib.error.URLError as error:
         raise exceptions.GeocodeException(error.reason)
 
@@ -23,7 +22,8 @@ class Singleton(type):
 
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
-            cls._instances[cls] = super(
-                Singleton, cls).__call__(*args, **kwargs)
+            cls._instances[cls] = super(Singleton, cls).__call__(
+                *args, **kwargs
+            )
 
         return cls._instances[cls]
