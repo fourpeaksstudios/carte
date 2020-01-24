@@ -1,19 +1,3 @@
-import logging
-import os
-
-import reverse_geocode
-
-formatter = logging.Formatter(
-    "%(asctime)s - %(levelname)s - %(message)s"
-)
-handler = logging.FileHandler(
-    os.path.join(os.pardir, __name__)
-)
-logs = logging.getLogger(__name__)
-
-handler.setLevel(logging.DEBUG)
-handler.setFormatter(formatter)
-logs.addHandler(handler)
 import carte
 
 
@@ -23,8 +7,13 @@ def locate():
 
 def test_answer():
     assert locate() == [
-        {'country_code': 'AU', 'city': 'Melbourne', 'admin1': 'Victoria',
-         'admin2': 'Melbourne', 'country': 'Australia'},
-        {'country_code': 'IL', 'city': 'Jerusalem', 'admin1': 'Jerusalem',
-         'admin2': '', 'country': 'Israel'}
+        {
+            "country_code": "AU",
+            "city": "Melbourne",
+            "admin1": "Victoria",
+            "admin2": "Melbourne",
+            "country": "Australia",
+        },
+        {
+            "country_code": "IL",
     ]
